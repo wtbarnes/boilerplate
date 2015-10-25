@@ -108,6 +108,8 @@ class OutputHandler(object):
         with open(self.output_filename,'w') as f: 
             f.write(self.pretty_print_xml(root))
             
+        f.close()
+            
             
     def set_element(self,root,name,val):
         """Create element, set tag, set value."""
