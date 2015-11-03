@@ -29,12 +29,13 @@ class Solvers0D(object):
         derivs = self.func(state,time,tau,**self.func_params)
         
         #Update parameters
+        new_state = np.zeros(len(state))
         if len(derivs) != len(state):
             raise ValueError("Dimension mismatch between state and derivs vectors.")
         for i in range(len(derivs)):
-            state[i] += derivs[i]*tau
+            new_state[i] += derivs[i]*tau
             
-        return state
+        return new_state
         
         
     def rk4_solve(self,state,time,tau):
