@@ -33,7 +33,7 @@ class Solvers0D(object):
         if len(derivs) != len(state):
             raise ValueError("Dimension mismatch between state and derivs vectors.")
         for i in range(len(derivs)):
-            new_state[i] += derivs[i]*tau
+            new_state[i] = state[i] + derivs[i]*tau
             
         return new_state
         
