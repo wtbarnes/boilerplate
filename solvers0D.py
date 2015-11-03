@@ -51,16 +51,20 @@ class Solvers0D(object):
         #Calculate RK f_1--f_4 functions
         for i in range(len(tau_temp)):
             f_rk.append(self.func(state,time_temp[i],tau_temp[i],**self.func_params))
+            
             if len(f_rk[-1]) != len(state):
                 raise ValueError("Dimension mismatch between state and derivs vectors.")
+                
             for j in range(len(f_rk[-1])):
-                state[j] += f_rk[-1]*tau_temp[i]
+                new_state[j] = state[j] + f_rk[-1][j]*tau_temp[i]
+                
+            state = new_state
                 
         #Update state vector
         for i in range(len(initial_state)):
-            state[i] = initial_state[i] + 1.0/6.0*tau*(f_rk[0][i] + f_rk[3][i] + 2.0*(f_rk[1][i] + f_rk[2][i]))
+            new_state[i] = initial_state[i] + 1.0/6.0*tau*(f_rk[0][i] + f_rk[3][i] + 2.0*(f_rk[1][i] + f_rk[2][i]))
             
-        return state
+        return new_state
         
         
     #def adaptive_timestep(self,)
