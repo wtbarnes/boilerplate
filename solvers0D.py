@@ -26,7 +26,7 @@ class Solvers0D(object):
         """Use first order Euler method to step equation forward in time."""
         
         #Step forward in time
-        derivs = self.func(state,time,**self.func_params)
+        derivs = self.func(state,time,tau,**self.func_params)
         
         #Update parameters
         if len(derivs) != len(state):
@@ -49,7 +49,7 @@ class Solvers0D(object):
         
         #Calculate RK f_1--f_4 functions
         for i in range(len(tau_temp)):
-            f_rk.append(self.func(state,time_temp[i],self.func_params))
+            f_rk.append(self.func(state,time_temp[i],tau_temp[i],**self.func_params))
             if len(f_rk[-1]) != len(state):
                 raise ValueError("Dimension mismatch between state and derivs vectors.")
             for j in range(len(f_rk[-1])):
