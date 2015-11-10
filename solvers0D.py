@@ -26,16 +26,12 @@ class Solvers0D(object):
         """Use first order Euler method to step equation forward in time."""
         
         #Step forward in time
-        derivs = self.func(state,time,tau,**self.func_params)
+        derivs = np.array(self.func(state,time,tau,**self.func_params))
         
-        #Update parameters
-        new_state = np.zeros(len(state))
         if len(derivs) != len(state):
             raise ValueError("Dimension mismatch between state and derivs vectors.")
-        for i in range(len(derivs)):
-            new_state[i] = state[i] + derivs[i]*tau
             
-        return new_state
+        return np.array(state) + tau*derivs
         
         
     def rk4_solve(self,state,time,tau):
@@ -47,6 +43,9 @@ class Solvers0D(object):
         f2 = np.array(self.func(state+tau/2*f1,time+tau/2,tau/2,**self.func_params))
         f3 = np.array(self.func(state+tau/2*f2,time+tau/2,tau/2,**self.func_params))
         f4 = np.array(self.func(state+tau*f3,time+tau,tau,**self.func_params))
+        
+        if len(f1) != len(state) or len(f2) != len(state) or len(f3) != len(state) or len(f4) != len(state):
+            raise ValueError("Dimension mismatch between state and f vectors.")
         
         return np.array(state) + tau/6.0*(f1 + 2.0*f2 + 2.0*f3 + f4)
         
