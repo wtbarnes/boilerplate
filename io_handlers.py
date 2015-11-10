@@ -3,6 +3,7 @@
 #Purpose: Handle XML input and output
 
 #Import needed modules
+import logging
 import numpy as np
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as xdm
@@ -27,6 +28,8 @@ class InputHandler(object):
         self.var_list = input_vars
         #Initialize dictionary to hold results of input parameters
         self.input_dict = {}
+        #Start logging
+        logger = logging.getLogger(type(self).__name__)
         
         
     def lookup_vars(self,**kwargs):
@@ -37,8 +40,8 @@ class InputHandler(object):
             node = self.root.find(var)
             #Check if found
             if node is None:
-                print("No value found for input %s"%var)
-                print("Check for consistency between XML node and variable list.")
+                logger.warning("No value found for input %s"%var)
+                logger.warning("Check for consistency between XML node and variable list.")
                 continue
             
             #check node type
@@ -67,8 +70,8 @@ class InputHandler(object):
         elif node_type == type(int()).__name__ or node_type == type(np.int64()).__name__:
             val = int(note.text)
         else:
-            print("Missing or unknown type for node %s"%node.tag)
-            print("Reading in as string.")
+            logger.warning("Missing or unknown type for node %s"%node.tag)
+            logger.warning("Reading in as string.")
             val = node.text
             
         return val
