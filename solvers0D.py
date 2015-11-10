@@ -40,31 +40,15 @@ class Solvers0D(object):
         
     def rk4_solve(self,state,time,tau):
         """Use fourth-order Runge-Kutta solver to step equation forward in time."""
-        
-        #Initialize different time and timestep lists
-        tau_temp = [.5*tau]*3 + [tau]
-        time_temp = [time] + [time+.5*tau]*2 + [time+tau]
-        
-        initial_state = state
-        f_rk = []
-        
-        #Calculate RK f_1--f_4 functions
-        for i in range(len(tau_temp)):
-            f_rk.append(self.func(state,time_temp[i],tau_temp[i],**self.func_params))
             
-            if len(f_rk[-1]) != len(state):
-                raise ValueError("Dimension mismatch between state and derivs vectors.")
-                
-            for j in range(len(f_rk[-1])):
-                new_state[j] = state[j] + f_rk[-1][j]*tau_temp[i]
-                
-            state = new_state
-                
-        #Update state vector
-        for i in range(len(initial_state)):
-            new_state[i] = initial_state[i] + 1.0/6.0*tau*(f_rk[0][i] + f_rk[3][i] + 2.0*(f_rk[1][i] + f_rk[2][i]))
-            
-        return new_state
+        #calculate f functions
+        #   cast as numpy array just in case this has not been done in the function
+        f1 = np.array(self.func(state,time,tau,**self.func_params))
+        f2 = np.array(self.func(state+tau/2*f1,time+tau/2,tau/2,**self.func_params))
+        f3 = np.array(self.func(state+tau/2*f2,time+tau/2,tau/2,**self.func_params))
+        f4 = np.array(self.func(state+tau*f3,time+tau,tau,**self.func_params))
+        
+        return np.array(state) + tau/6.0*(f1 + f2 + f3 + f4)
         
         
     #def adaptive_timestep(self,)
