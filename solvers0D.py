@@ -48,7 +48,7 @@ class Solvers0D(object):
         f3 = np.array(self.func(state+tau/2*f2,time+tau/2,tau/2,**self.func_params))
         f4 = np.array(self.func(state+tau*f3,time+tau,tau,**self.func_params))
         
-        return np.array(state) + tau/6.0*(f1 + f2 + f3 + f4)
+        return np.array(state) + tau/6.0*(f1 + 2.0*f2 + 2.0*f3 + f4)
         
         
     #def adaptive_timestep(self,)
