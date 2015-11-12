@@ -16,6 +16,10 @@ class InputHandler(object):
         var_list -- list of strings of variables to be read
         input_dict -- dictionary of input values as read from XML file
         
+    Note(s):
+        --A logging instance should be created prior to instantiating 
+        InputHandler so that relevant log messages can be recorded.
+        
     """
     
     def __init__(self,input_filename,input_vars,**kwargs):
@@ -105,6 +109,7 @@ class OutputHandler(object):
                 self.set_element(root,key,self.output_dict[key])
             else:
                 element = ET.SubElement(root,key)
+                element.set('type',type(self.output_dict[key]).__name__)
                 for i in range(len(self.output_dict[key])):
                     self.set_element(element,key+str(i),self.output_dict[key][i])
                     
