@@ -29,7 +29,7 @@ class InputHandler(object):
         #Initialize dictionary to hold results of input parameters
         self.input_dict = {}
         #Start logging
-        logger = logging.getLogger(type(self).__name__)
+        self.logger = logging.getLogger(type(self).__name__)
         
         
     def lookup_vars(self,**kwargs):
@@ -40,8 +40,8 @@ class InputHandler(object):
             node = self.root.find(var)
             #Check if found
             if node is None:
-                logger.warning("No value found for input %s"%var)
-                logger.warning("Check for consistency between XML node and variable list.")
+                self.logger.warning("No value found for input %s"%var)
+                self.logger.warning("Check for consistency between XML node and variable list.")
                 continue
             
             #check node type
@@ -70,8 +70,8 @@ class InputHandler(object):
         elif node_type == type(int()).__name__ or node_type == type(np.int64()).__name__:
             val = int(note.text)
         else:
-            logger.warning("Missing or unknown type for node %s"%node.tag)
-            logger.warning("Reading in as string.")
+            self.logger.warning("Missing or unknown type for node %s"%node.tag)
+            self.logger.warning("Reading in as string.")
             val = node.text
             
         return val
