@@ -98,36 +98,51 @@ class OutputHandler(object):
         
         self.output_filename = output_filename
         self.output_dict = output_dict
+        #configure logger
+        self.logger = logging.getLogger(type(self).__name__)
         
         
     def print_to_xml(self):
         """Print dictionary to XML file"""
         
-        root = ET.Element('root')
+        self.root = ET.Element('root')
         for key in self.output_dict:
-            if (type(self.output_dict[key]) is not np.ndarray) and (type(self.output_dict[key]) is not list):
-                self.set_element(root,key,self.output_dict[key])
-            else:
-                element = ET.SubElement(root,key)
-                element.set('type',type(self.output_dict[key]).__name__)
-                for i in range(len(self.output_dict[key])):
-                    self.set_element(element,key+str(i),self.output_dict[key][i])
-                    
+            self.set_element_recursive(self.root,self.output_dict[key],key)
+            
         with open(self.output_filename,'w') as f: 
-            f.write(self.pretty_print_xml(root))
+            f.write(self._pretty_print_xml(self.root))
             
         f.close()
+        
+    
+    def display_xml(self):
+        """Print configured XML to the screen"""
+        
+        if not hasattr(self,'root'):
+            self.logger.error('No root element found. Run self.print_to_xml() first.')
+        
+        print(self._pretty_print_xml(self.root))
             
             
-    def set_element(self,root,name,val):
-        """Create element, set tag, set value."""
+    def set_element_recursive(self,root,node,keyname):
         
-        element = ET.SubElement(root,name)
-        element.text = str(val)
-        element.set('type',type(val).__name__)
+        #create subelement
+        element = ET.SubElement(root,keyname)
+        if type(node) is list:
+            for item in node:
+                sub_keyname = [k for k in item][0]
+                self.set_element_recursive(element,item[sub_keyname],sub_keyname)
+        elif type(node) is dict:
+            for key in node:
+                if key == '_val':
+                    element.text = str(node[key])
+                else:
+                    element.set(key,str(node[key]))
+        else:
+            element.text = str(node)
         
         
-    def pretty_print_xml(self,element):
+    def _pretty_print_xml(self,element):
         """Formatted XML output for writing to file."""
         
         unformatted = ET.tostring(element)
