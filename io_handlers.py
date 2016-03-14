@@ -124,7 +124,7 @@ class OutputHandler(object):
         print(self._pretty_print_xml(self.root))
             
             
-    def set_element_recursive(self,root,node,keyname):
+    def _set_element_recursive(self,root,node,keyname):
         
         #create subelement
         element = ET.SubElement(root,keyname)
