@@ -107,7 +107,7 @@ class OutputHandler(object):
         
         self.root = ET.Element('root')
         for key in self.output_dict:
-            self.set_element_recursive(self.root,self.output_dict[key],key)
+            self._set_element_recursive(self.root,self.output_dict[key],key)
             
         with open(self.output_filename,'w') as f: 
             f.write(self._pretty_print_xml(self.root))
@@ -131,7 +131,7 @@ class OutputHandler(object):
         if type(node) is list:
             for item in node:
                 sub_keyname = [k for k in item][0]
-                self.set_element_recursive(element,item[sub_keyname],sub_keyname)
+                self._set_element_recursive(element,item[sub_keyname],sub_keyname)
         elif type(node) is dict:
             for key in node:
                 if key == '_val':
